@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Listizd</title>
+  <link rel="shortcut icon" href="assets/icon.png" type="image/x-icon">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -41,14 +42,11 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 400;
       font-family: 'Vremena Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
       transition: background 0.3s, color 0.3s;
     }
 
-    /* Grain overlay */
     body::before {
       content: '';
       position: fixed; inset: 0;
@@ -60,7 +58,6 @@
 
     .serif { font-family: 'Instrument Serif', serif; }
 
-    /* Layout */
     .container {
       max-width: 1100px;
       margin: 0 auto;
@@ -68,26 +65,14 @@
       position: relative; z-index: 1;
     }
 
-    /* Header */
     header {
       padding: 28px 0 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .logo {
-      display: flex; align-items: baseline; gap: 6px;
-    }
-    .logo-word {
-      font-family: 'Instrument Serif', serif;
-      font-family: 'Vremena Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      
-      font-size: 1.25rem;
-      color: var(--text);
-    }
-    .logo-dot { color: var(--accent); font-size: 1.5rem; line-height: 1; }
+    .logo { display: flex; align-items: baseline; gap: 6px; }
 
-    /* Theme toggle */
     .theme-btn {
       width: 36px; height: 36px;
       border-radius: 50%;
@@ -99,28 +84,19 @@
       transition: all 0.2s;
       font-size: 15px;
     }
-    .theme-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
+    .theme-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-    /* Hero */
     .hero {
       text-align: center;
       padding: 64px 0 48px;
     }
     .hero-title {
-      font-family: 'Instrument Serif', serif;
-      font-family: 'Vremena Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       font-size: clamp(2.4rem, 5vw, 3.8rem);
       line-height: 1.1;
       color: var(--text);
       margin-bottom: 12px;
     }
-    .hero-title em {
-      font-style: italic;
-      color: var(--accent);
-    }
+    .hero-title em { font-style: italic; color: var(--accent); }
     .hero-sub {
       color: var(--text-muted);
       font-size: 0.95rem;
@@ -128,7 +104,6 @@
       letter-spacing: 0.01em;
     }
 
-    /* Input area */
     .input-section {
       max-width: 620px;
       margin: 0 auto;
@@ -153,8 +128,6 @@
       border: none;
       outline: none;
       color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-family: 'Vremena Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       font-size: 0.875rem;
       font-weight: 400;
     }
@@ -166,8 +139,6 @@
       border: none;
       border-radius: 10px;
       padding: 10px 20px;
-      font-family: 'DM Sans', sans-serif;
-      font-family: 'Vremena Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       font-weight: 600;
       font-size: 0.875rem;
       cursor: pointer;
@@ -178,7 +149,6 @@
     .fetch-btn:active { transform: translateY(0); }
     .fetch-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
-    /* Error */
     .error-box {
       margin-top: 14px;
       padding: 12px 16px;
@@ -191,7 +161,6 @@
     }
     .error-box.visible { display: block; }
 
-    /* Loading */
     .loading-section {
       text-align: center;
       padding: 60px 0;
@@ -207,30 +176,25 @@
       margin: 0 auto 16px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-text {
-      color: var(--text-muted);
-      font-size: 0.875rem;
-    }
+    .loading-text { color: var(--text-muted); font-size: 0.875rem; }
 
-    /* Results header */
     .results-header {
-      display: flex;
+      display: none;
       align-items: baseline;
       justify-content: space-between;
       margin-bottom: 28px;
       flex-wrap: wrap;
       gap: 12px;
-      display: none;
     }
     .results-header.visible { display: flex; }
-    .results-title {
-      font-family: 'Instrument Serif', serif;
-      font-family: 'Vremena Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      font-size: 1.6rem;
-    }
-    .results-count {
-      color: var(--text-muted);
-      font-size: 0.85rem;
+    .results-title { font-size: 1.6rem; }
+    .results-count { color: var(--text-muted); font-size: 0.85rem; }
+
+    .export-group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
     }
     .export-btn {
       background: transparent;
@@ -238,19 +202,13 @@
       border-radius: 8px;
       padding: 7px 14px;
       color: var(--text-muted);
-      font-family: 'DM Sans', sans-serif;
-      font-family: 'Vremena Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       font-size: 0.8rem;
       cursor: pointer;
       transition: all 0.2s;
       display: flex; align-items: center; gap: 6px;
     }
-    .export-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
+    .export-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-    /* Grid */
     .shows-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -258,13 +216,12 @@
       margin-bottom: 80px;
     }
 
-    /* Card */
     .show-card {
       border-radius: 12px;
       overflow: hidden;
       background: var(--bg-card);
       border: 1px solid var(--border);
-      cursor: default;
+      cursor: pointer;
       transition: transform 0.22s cubic-bezier(.22,1,.36,1),
                   box-shadow 0.22s cubic-bezier(.22,1,.36,1),
                   border-color 0.22s;
@@ -279,16 +236,6 @@
       from { opacity: 0; transform: translateY(16px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-    .show-card:nth-child(1)  { animation-delay: 0.02s; }
-    .show-card:nth-child(2)  { animation-delay: 0.04s; }
-    .show-card:nth-child(3)  { animation-delay: 0.06s; }
-    .show-card:nth-child(4)  { animation-delay: 0.08s; }
-    .show-card:nth-child(5)  { animation-delay: 0.10s; }
-    .show-card:nth-child(6)  { animation-delay: 0.12s; }
-    .show-card:nth-child(7)  { animation-delay: 0.14s; }
-    .show-card:nth-child(8)  { animation-delay: 0.16s; }
-    .show-card:nth-child(9)  { animation-delay: 0.18s; }
-    .show-card:nth-child(10) { animation-delay: 0.20s; }
 
     .card-poster {
       width: 100%;
@@ -306,9 +253,7 @@
       color: var(--text-muted);
       font-size: 1.8rem;
     }
-    .card-info {
-      padding: 10px 12px 12px;
-    }
+    .card-info { padding: 10px 12px 12px; }
     .card-title-text {
       font-size: 0.8rem;
       font-weight: 500;
@@ -319,21 +264,24 @@
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
     }
+    .card-runtime {
+      font-size: 0.72rem;
+      color: var(--accent);
+      margin-top: 4px;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
 
-    /* Divider */
     .divider {
-      width: 48px;
-      height: 1px;
+      width: 48px; height: 1px;
       background: var(--accent);
       margin: 0 auto 48px;
       opacity: 0.5;
     }
 
-    /* Toast */
     .toast {
       position: fixed;
-      bottom: 24px;
-      right: 24px;
+      bottom: 24px; right: 24px;
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 10px;
@@ -347,37 +295,199 @@
       z-index: 999;
       display: flex; align-items: center; gap: 8px;
     }
-    .toast.show {
-      transform: translateY(0);
-      opacity: 1;
-    }
+    .toast.show { transform: translateY(0); opacity: 1; }
     .toast-icon { color: var(--accent); }
+
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      max-width: 680px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+      transform: translateY(24px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(.22,1,.36,1);
+      position: relative;
+    }
+    .modal-backdrop.open .modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px; right: 14px;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg-input);
+      color: var(--text-muted);
+      font-size: 16px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.18s;
+      z-index: 10;
+    }
+    .modal-close:hover { border-color: var(--accent); color: var(--accent); }
+
+    .modal-body {
+      display: flex;
+      gap: 28px;
+      padding: 28px;
+    }
+    @media (max-width: 520px) {
+      .modal-body { flex-direction: column; }
+    }
+
+    .modal-poster-wrap {
+      flex-shrink: 0;
+      width: 160px;
+    }
+    @media (max-width: 520px) {
+      .modal-poster-wrap { width: 100%; max-width: 180px; margin: 0 auto; }
+    }
+
+    .modal-poster {
+      width: 100%;
+      border-radius: 10px;
+      aspect-ratio: 2/3;
+      object-fit: cover;
+      display: block;
+    }
+    .modal-no-poster {
+      width: 100%;
+      aspect-ratio: 2/3;
+      border-radius: 10px;
+      background: var(--bg-input);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.4rem;
+    }
+
+    .modal-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .modal-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text);
+      margin: 0 0 2px;
+    }
+
+    .modal-year {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .modal-rating {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent);
+      width: fit-content;
+      margin-bottom: 16px;
+    }
+
+    .modal-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .modal-row {
+      display: flex;
+      gap: 8px;
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+    .modal-label {
+      color: var(--text-muted);
+      white-space: nowrap;
+      min-width: 110px;
+      font-weight: 500;
+    }
+    .modal-value {
+      color: var(--text);
+    }
+
+    .modal-sep {
+      height: 1px;
+      background: var(--border);
+      margin: 12px 0;
+    }
+
+    .modal-footer {
+      padding: 0 28px 24px;
+    }
+
+    .modal-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 14px;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-decoration: none;
+      transition: all 0.18s;
+    }
+    .modal-link:hover { border-color: var(--accent); color: var(--accent); }
   </style>
 </head>
 <body>
 
 <div class="container">
 
-  <!-- Header -->
   <header>
     <div class="logo">
-      <span class="logo-word">List<span style="color: #2f8272;">izd</span></span>
-      <span class="logo-dot"></span>
+      <span>
+        <img src="assets/logo.png" alt="Listizd logo" style="height:80px; width:auto;" />
+      </span>
     </div>
     <button class="theme-btn" id="themeToggle" title="Toggle theme" aria-label="Toggle theme">☀️</button>
   </header>
 
-  <!-- Hero -->
   <section class="hero">
-    <!-- <h1 class="hero-title">Your Serializd list,<br><em>beautifully filtered.</em></h1> -->
     <h1 class="hero-title">Extract and Export<br><em>any Serializd list</em></h1>
-    <!-- <p class="hero-sub">Paste any public list URL and see all shows at a glance.</p> -->
-    <p class="hero-sub">Paste any public Serializd list URL and instantly get every show — titles, posters and total watch time.</p>
+    <p class="hero-sub">Paste any public Serializd list URL (list, watchlist, watched, etc.) and instantly get and export every show and its details.</p>
   </section>
 
   <div class="divider"></div>
 
-  <!-- Input -->
   <div class="input-section">
     <div class="input-box">
       <input
@@ -393,40 +503,110 @@
     <div class="error-box" id="errorBox"></div>
   </div>
 
-  <!-- Loading -->
   <div class="loading-section" id="loadingSection">
     <div class="spinner"></div>
     <p class="loading-text">Fetching your list — this may take a few seconds…</p>
   </div>
 
-  <!-- Results -->
   <div class="results-header" id="resultsHeader">
     <div>
       <span class="results-title">Your list</span>
       <span class="results-count" id="resultsCount"></span>
     </div>
-    <button class="export-btn" onclick="exportText()">
-      <span>↓</span> Export as text
-    </button>
+    <div class="export-group">
+      <button class="export-btn" onclick="exportText()">
+        <span>↓</span> Export as text
+      </button>
+      <button class="export-btn" onclick="exportCSV()">
+        <span>↓</span> Export as CSV
+      </button>
+    </div>
   </div>
+
+  <p id="totalRuntime" style="color: var(--accent); font-size: 0.9rem; margin-bottom: 20px;"></p>
 
   <div class="shows-grid" id="showsGrid"></div>
 
 </div>
 
-<!-- Toast -->
+<!-- ── Show detail modal ── -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="handleBackdropClick(event)">
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
+    <div class="modal-body">
+      <div class="modal-poster-wrap" id="modalPosterWrap"></div>
+      <div class="modal-info">
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <p class="modal-year" id="modalYear"></p>
+        <div class="modal-rating" id="modalRating"></div>
+        <div class="modal-meta" id="modalMeta"></div>
+      </div>
+    </div>
+    <div class="modal-sep" style="margin: 0 28px;"></div>
+    <div class="modal-footer" id="modalFooter"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast">
   <span class="toast-icon">✓</span>
   <span id="toastMsg">Copied to clipboard!</span>
 </div>
 
-<footer style="text-align:center; color:var(--text-muted); font-size:0.8rem; padding-bottom:40px;">
-  Built for Serializd users • Not affiliated with Serializd
+<footer style="text-align:center; color:var(--text-muted); font-size:0.8rem; padding: 40px 0; display: flex; flex-direction: column; align-items: center; gap: 16px;">
+  
+  <div>
+    Built for <a href="https://www.serializd.com/" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none; font-weight: 500; transition: opacity 0.2s;">Serializd</a> users 
+    • Not affiliated with Serializd
+  </div>
+
+  <a target="_blank" rel="noopener" href="https://www.themoviedb.org/" style="display:inline-flex; align-items:center; gap: 8px; text-decoration: none; color: var(--text-muted); transition: color 0.2s;">
+    <span>TV data from</span>
+    <img alt="Logo for TMDB" 
+         src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" 
+         width="100" 
+         height="12" 
+         style="display: block;" 
+         loading="lazy">
+  </a>
+
 </footer>
 
 <script>
-  const API_BASE = window.location.origin; // same origin as FastAPI
+  const API_BASE = window.location.origin;
   let currentShows = [];
+
+  function renderRuntime(rt) {
+    if (!rt || (rt.days === 0 && rt.hours === 0 && rt.minutes === 0)) return "";
+    const parts = [];
+    if (rt.days)    parts.push(`${rt.days}d`);
+    if (rt.hours)   parts.push(`${rt.hours}h`);
+    if (rt.minutes) parts.push(`${rt.minutes}m`);
+    return parts.join(" ");
+  }
+
+  function formatRuntime(minutes) {
+    if (!minutes) return `<div class="card-runtime">—</div>`;
+    const d = Math.floor(minutes / (60 * 24));
+    const h = Math.floor((minutes % (60 * 24)) / 60);
+    const m = minutes % 60;
+    const parts = [];
+    if (d) parts.push(`${d}d`);
+    if (h) parts.push(`${h}h`);
+    if (m) parts.push(`${m}m`);
+    return `<div class="card-runtime">${parts.join(" ")}</div>`;
+  }
+
+  function runtimeToString(minutes) {
+    if (!minutes) return "—";
+    const d = Math.floor(minutes / (60 * 24));
+    const h = Math.floor((minutes % (60 * 24)) / 60);
+    const m = minutes % 60;
+    const parts = [];
+    if (d) parts.push(`${d}d`);
+    if (h) parts.push(`${h}h`);
+    if (m) parts.push(`${m}m`);
+    return parts.join(" ");
+  }
 
   // ── Theme toggle ──────────────────────────────────────────────
   const html = document.documentElement;
@@ -437,41 +617,30 @@
     themeBtn.textContent = t === "dark" ? "☀️" : "🌙";
     localStorage.setItem("slv-theme", t);
   }
-
   themeBtn.addEventListener("click", () => {
     applyTheme(html.getAttribute("data-theme") === "dark" ? "light" : "dark");
   });
-
-  // Restore saved theme
   applyTheme(localStorage.getItem("slv-theme") || "dark");
-
 
   // ── Fetch list ────────────────────────────────────────────────
   async function fetchList() {
     const url = document.getElementById("urlInput").value.trim();
-    const errorBox = document.getElementById("errorBox");
+    const errorBox       = document.getElementById("errorBox");
     const loadingSection = document.getElementById("loadingSection");
-    const resultsHeader = document.getElementById("resultsHeader");
-    const showsGrid = document.getElementById("showsGrid");
-    const fetchBtn = document.getElementById("fetchBtn");
+    const resultsHeader  = document.getElementById("resultsHeader");
+    const showsGrid      = document.getElementById("showsGrid");
+    const fetchBtn       = document.getElementById("fetchBtn");
 
-    // Reset
     errorBox.classList.remove("visible");
     errorBox.textContent = "";
     resultsHeader.classList.remove("visible");
     showsGrid.innerHTML = "";
+    document.getElementById("totalRuntime").textContent = "";
     currentShows = [];
 
-    if (!url) {
-      showError("Please enter a Serializd list URL.");
-      return;
-    }
-    if (!url.includes("serializd.com")) {
-      showError("URL must be from serializd.com");
-      return;
-    }
+    if (!url) { showError("Please enter a Serializd list URL."); return; }
+    if (!url.includes("serializd.com")) { showError("URL must be from serializd.com"); return; }
 
-    // Loading state
     fetchBtn.disabled = true;
     loadingSection.classList.add("visible");
 
@@ -481,16 +650,16 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url }),
       });
-
       const data = await resp.json();
-
-      if (!resp.ok) {
-        throw new Error(data.detail || "An error occurred.");
-      }
+      if (!resp.ok) throw new Error(data.detail || "An error occurred.");
 
       currentShows = data.shows;
       renderShows(data.shows);
 
+      const rtLabel = renderRuntime(data.total_runtime);
+      if (rtLabel) {
+        document.getElementById("totalRuntime").textContent = `⏱ Total watch time: ${rtLabel}`;
+      }
     } catch (err) {
       showError(err.message || "Failed to connect to the backend.");
     } finally {
@@ -499,7 +668,6 @@
     }
   }
 
-  // Allow Enter key
   document.getElementById("urlInput").addEventListener("keydown", (e) => {
     if (e.key === "Enter") fetchList();
   });
@@ -511,29 +679,99 @@
   }
 
   function renderShows(shows) {
-    const grid = document.getElementById("showsGrid");
+    const grid   = document.getElementById("showsGrid");
     const header = document.getElementById("resultsHeader");
-    const count = document.getElementById("resultsCount");
+    const count  = document.getElementById("resultsCount");
 
     count.textContent = ` — ${shows.length} show${shows.length !== 1 ? "s" : ""}`;
     header.classList.add("visible");
 
-    grid.innerHTML = shows
-      .map((show, i) => `
-        <div class="show-card" style="animation-delay:${Math.min(i * 0.025, 0.4)}s">
-          ${
-            show.poster
-              ? `<img class="card-poster" src="${escHtml(show.poster)}" alt="${escHtml(show.title)}" loading="lazy" onerror="this.replaceWith(makeFallback())" />`
-              : `<div class="card-no-poster">🎬</div>`
-          }
-          <div class="card-info">
-            <div class="card-title-text">${escHtml(show.title)}</div>
-          </div>
+    grid.innerHTML = shows.map((show, i) => `
+      <div class="show-card" style="animation-delay:${Math.min(i * 0.025, 0.4)}s" onclick="openModal(${i})">
+        ${show.poster
+          ? `<img class="card-poster" src="${escHtml(show.poster)}" alt="${escHtml(show.title)}" loading="lazy" onerror="this.replaceWith(makeFallback())" />`
+          : `<div class="card-no-poster">🎬</div>`}
+        <div class="card-info">
+          <div class="card-title-text">${escHtml(show.title)}</div>
+          ${formatRuntime(show.runtime_minutes)}
         </div>
-      `)
-      .join("");
+      </div>
+    `).join("");
   }
 
+  // ── Modal ─────────────────────────────────────────────────────
+  function openModal(index) {
+    const show = currentShows[index];
+    if (!show) return;
+
+    // Poster
+    const posterWrap = document.getElementById("modalPosterWrap");
+    if (show.poster) {
+      posterWrap.innerHTML = `<img class="modal-poster" src="${escHtml(show.poster)}" alt="${escHtml(show.title)}" />`;
+    } else {
+      posterWrap.innerHTML = `<div class="modal-no-poster">🎬</div>`;
+    }
+
+    // Title & year
+    document.getElementById("modalTitle").textContent = show.title;
+    document.getElementById("modalYear").textContent  = show.year || "";
+
+    // Rating
+    const ratingEl = document.getElementById("modalRating");
+    if (show.tmdb_rating) {
+      ratingEl.style.display = "inline-flex";
+      ratingEl.innerHTML = `<span>★</span> ${show.tmdb_rating} <span style="color:var(--text-muted);font-weight:400">/ 10 · TMDB</span>`;
+    } else {
+      ratingEl.style.display = "none";
+    }
+
+    // Meta rows
+    const rows = [
+      { label: "Watch time",    value: runtimeToString(show.runtime_minutes) },
+      { label: "Seasons",       value: show.seasons   || "—" },
+      { label: "Episodes",      value: show.episodes  || "—" },
+      { label: "Genres",        value: show.genres    || "—" },
+      { label: "Country",       value: show.country   || "—" },
+      { label: "Language",      value: show.original_language || "—" },
+      { label: "Network",       value: show.network   || "—" },
+    ];
+
+    document.getElementById("modalMeta").innerHTML = rows.map(r => `
+      <div class="modal-row">
+        <span class="modal-label">${r.label}</span>
+        <span class="modal-value">${escHtml(String(r.value))}</span>
+      </div>
+    `).join("");
+
+    // Footer link
+    const footerEl = document.getElementById("modalFooter");
+    if (show.serializd_url) {
+      footerEl.innerHTML = `
+        <a class="modal-link" href="${escHtml(show.serializd_url)}" target="_blank" rel="noopener">
+          <span>↗</span> View on Serializd
+        </a>`;
+    } else {
+      footerEl.innerHTML = "";
+    }
+
+    document.getElementById("modalBackdrop").classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeModal() {
+    document.getElementById("modalBackdrop").classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  function handleBackdropClick(e) {
+    if (e.target === document.getElementById("modalBackdrop")) closeModal();
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeModal();
+  });
+
+  // ── Helpers ───────────────────────────────────────────────────
   function makeFallback() {
     const d = document.createElement("div");
     d.className = "card-no-poster";
@@ -543,29 +781,65 @@
 
   function escHtml(str) {
     return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
-
 
   // ── Export as text ────────────────────────────────────────────
   function exportText() {
     if (!currentShows.length) return;
     const text = currentShows.map((s, i) => `${i + 1}. ${s.title}`).join("\n");
-
     navigator.clipboard.writeText(text).then(() => {
       showToast("List copied to clipboard!");
     }).catch(() => {
-      // Fallback: download as file
-      const blob = new Blob([text], { type: "text/plain" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "serializd-list.txt";
-      a.click();
+      downloadFile(text, "serializd-list.txt", "text/plain");
       showToast("Saved as serializd-list.txt");
     });
+  }
+
+  // ── Export as CSV ─────────────────────────────────────────────
+  function exportCSV() {
+    if (!currentShows.length) return;
+
+    const headers = [
+      "#", "Title", "Year", "TMDB Rating", "Seasons", "Episodes",
+      "Watch Time", "Genres", "Country", "Language", "Network",
+      "Serializd URL", "Poster URL",
+    ];
+
+    const rows = currentShows.map((s, i) => [
+      i + 1,
+      csvCell(s.title),
+      csvCell(s.year                 ?? ""),
+      csvCell(s.tmdb_rating          ?? ""),
+      csvCell(s.seasons              ?? ""),
+      csvCell(s.episodes             ?? ""),
+      csvCell(runtimeToString(s.runtime_minutes)),
+      csvCell(s.genres               ?? ""),
+      csvCell(s.country              ?? ""),
+      csvCell(s.original_language    ?? ""),
+      csvCell(s.network              ?? ""),
+      csvCell(s.serializd_url        ?? ""),
+      csvCell(s.poster               ?? ""),
+    ].join(","));
+
+    const csv = [headers.join(","), ...rows].join("\n");
+    downloadFile(csv, "serializd-list.csv", "text/csv;charset=utf-8;");
+    showToast("Saved as serializd-list.csv");
+  }
+
+  function csvCell(value) {
+    const str = String(value ?? "").replace(/"/g, '""');
+    return `"${str}"`;
+  }
+
+  function downloadFile(content, filename, mimeType) {
+    const blob = new Blob([content], { type: mimeType });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(a.href);
   }
 
   function showToast(msg) {

@@ -5,25 +5,25 @@ import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import uvicorn
 
 app = FastAPI()
-
-# Enable CORS so the browser allows the connection
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app.mount("/assets", StaticFiles(directory="assets"), name="assets")
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 class ScrapeRequest(BaseModel):
     url: str
 
+def minutes_to_dhm(total_minutes: int) -> dict:
+    days = total_minutes // (60 * 24)
+    hours = (total_minutes % (60 * 24)) // 60
+    minutes = total_minutes % 60
+    return {"days": days, "hours": hours, "minutes": minutes}
+
 @app.get("/", response_class=HTMLResponse)
 async def serve_frontend():
-    # Paths are relative to this file's location
     html_path = os.path.join(os.path.dirname(__file__), "index.html")
     with open(html_path, "r", encoding="utf-8") as f:
         return f.read()
@@ -31,37 +31,80 @@ async def serve_frontend():
 @app.post("/scrape")
 async def scrape(req: ScrapeRequest):
     url = req.url.strip()
-    # Locate the scraper.py script in the same folder
+    if "serializd.com" not in url:
+        raise HTTPException(status_code=400, detail="Fornire un URL Serializd valido.")
+
     scraper_script = os.path.join(os.path.dirname(__file__), "scraper.py")
-    
     try:
-        # This mimics you typing "python scraper.py <url>" in the terminal
         process = await asyncio.create_subprocess_exec(
             sys.executable, scraper_script, url,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE
         )
-
-        stdout, stderr = await process.communicate()
+        stdout, stderr = await asyncio.wait_for(process.communicate(), timeout=600.0)
 
         if process.returncode != 0:
             error_msg = stderr.decode().strip()
             raise HTTPException(status_code=500, detail=f"Scraper Error: {error_msg}")
 
-        # Capture the JSON string printed by scraper.py
-        output = stdout.decode().strip()
-        
-        # In case scraper.py outputs an error dictionary instead of a list
-        data = json.loads(output)
+        data = json.loads(stdout.decode().strip())
         if isinstance(data, dict) and "error" in data:
             raise HTTPException(status_code=400, detail=data["error"])
 
-        # Return exactly what your index.html expects
-        return JSONResponse({"count": len(data), "shows": data})
-
+        total_min = sum(s.get("runtime_minutes", 0) for s in data)
+        return JSONResponse({
+            "count": len(data),
+            "shows": data,
+            "total_runtime": minutes_to_dhm(total_min),
+        })
+    except asyncio.TimeoutError:
+        raise HTTPException(status_code=504, detail="Tempo scaduto: la lista è troppo lunga o il server è lento.")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Backend failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Errore: {str(e)}")
+    
+import traceback
+
+@app.post("/scrape")
+async def scrape(req: ScrapeRequest):
+    url = req.url.strip()
+    if "serializd.com" not in url:
+        raise HTTPException(status_code=400, detail="Fornire un URL Serializd valido.")
+
+    scraper_script = os.path.join(os.path.dirname(__file__), "scraper.py")
+    try:
+        process = await asyncio.create_subprocess_exec(
+            sys.executable, scraper_script, url,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE
+        )
+        stdout, stderr = await asyncio.wait_for(process.communicate(), timeout=600.0)
+
+        stderr_text = stderr.decode().strip()
+        if stderr_text:
+            print("SCRAPER STDERR:", stderr_text, flush=True) 
+
+        if process.returncode != 0:
+            print("SCRAPER FAILED with code:", process.returncode, flush=True)  
+            raise HTTPException(status_code=500, detail=f"Scraper Error: {stderr_text}")
+
+        data = json.loads(stdout.decode().strip())
+        if isinstance(data, dict) and "error" in data:
+            raise HTTPException(status_code=400, detail=data["error"])
+
+        total_min = sum(s.get("runtime_minutes", 0) for s in data)
+        return JSONResponse({
+            "count": len(data),
+            "shows": data,
+            "total_runtime": minutes_to_dhm(total_min),
+        })
+    except asyncio.TimeoutError:
+        raise HTTPException(status_code=504, detail="Timeout.")
+    except HTTPException:
+        raise
+    except Exception as e:
+        print("UNEXPECTED ERROR:", traceback.format_exc(), flush=True)
+        raise HTTPException(status_code=500, detail=f"Errore: {str(e)}")
 
 if __name__ == "__main__":
-    # Use 127.0.0.1 to prevent the ERR_ADDRESS_INVALID browser error
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    port = int(os.environ.get("PORT", 7860))
+    uvicorn.run(app, host="0.0.0.0", port=port)
