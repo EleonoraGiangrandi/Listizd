@@ -22,6 +22,14 @@ def minutes_to_dhm(total_minutes: int) -> dict:
     minutes = total_minutes % 60
     return {"days": days, "hours": hours, "minutes": minutes}
 
+#Convert short app links to full serializd.com URLs
+def normalize_url(url: str) -> str:
+    import re
+    match = re.match(r'^https?://srlzd\.com/l/([a-zA-Z0-9]+)', url)
+    if match:
+        return f"https://www.serializd.com/list/{match.group(1)}?isHexId=true"
+    return url
+
 @app.get("/", response_class=HTMLResponse)
 async def serve_frontend():
     html_path = os.path.join(os.path.dirname(__file__), "index.html")
@@ -30,43 +38,7 @@ async def serve_frontend():
 
 @app.post("/scrape")
 async def scrape(req: ScrapeRequest):
-    url = req.url.strip()
-    if "serializd.com" not in url:
-        raise HTTPException(status_code=400, detail="Fornire un URL Serializd valido.")
-
-    scraper_script = os.path.join(os.path.dirname(__file__), "scraper.py")
-    try:
-        process = await asyncio.create_subprocess_exec(
-            sys.executable, scraper_script, url,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE
-        )
-        stdout, stderr = await asyncio.wait_for(process.communicate(), timeout=600.0)
-
-        if process.returncode != 0:
-            error_msg = stderr.decode().strip()
-            raise HTTPException(status_code=500, detail=f"Scraper Error: {error_msg}")
-
-        data = json.loads(stdout.decode().strip())
-        if isinstance(data, dict) and "error" in data:
-            raise HTTPException(status_code=400, detail=data["error"])
-
-        total_min = sum(s.get("runtime_minutes", 0) for s in data)
-        return JSONResponse({
-            "count": len(data),
-            "shows": data,
-            "total_runtime": minutes_to_dhm(total_min),
-        })
-    except asyncio.TimeoutError:
-        raise HTTPException(status_code=504, detail="Tempo scaduto: la lista è troppo lunga o il server è lento.")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Errore: {str(e)}")
-    
-import traceback
-
-@app.post("/scrape")
-async def scrape(req: ScrapeRequest):
-    url = req.url.strip()
+    url = normalize_url(req.url.strip())
     if "serializd.com" not in url:
         raise HTTPException(status_code=400, detail="Fornire un URL Serializd valido.")
 

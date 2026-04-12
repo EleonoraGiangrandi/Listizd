@@ -572,12 +572,15 @@
 </footer>
 
 <script>
+  const API_BASE = window.location.origin;
+  let currentShows = [];
+
   // ── Normalize short app links ─────────────────────────────────
-  // Converts https://srlzd.com/l/{id} → https://serializd.com/list/{id}?isHexId=true
+  // Converts https://srlzd.com/l/{id} → https://www.serializd.com/list/{id}?isHexId=true
   function normalizeSerializdUrl(url) {
     const match = url.match(/^https?:\/\/srlzd\.com\/l\/([a-zA-Z0-9]+)/);
     if (match) {
-      return `https://serializd.com/list/${match[1]}?isHexId=true`;
+      return `https://www.serializd.com/list/${match[1]}?isHexId=true`;
     }
     return url;
   }
@@ -647,7 +650,7 @@
 
     if (!url) { showError("Please enter a Serializd list URL."); return; }
 
-    // Convert short app links to full serializd.com URLs before anything else
+    // Convert short app links to full serializd.com URLs
     url = normalizeSerializdUrl(url);
     document.getElementById("urlInput").value = url;
 
