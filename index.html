@@ -572,8 +572,15 @@
 </footer>
 
 <script>
-  const API_BASE = window.location.origin;
-  let currentShows = [];
+  // ── Normalize short app links ─────────────────────────────────
+  // Converts https://srlzd.com/l/{id} → https://serializd.com/list/{id}?isHexId=true
+  function normalizeSerializdUrl(url) {
+    const match = url.match(/^https?:\/\/srlzd\.com\/l\/([a-zA-Z0-9]+)/);
+    if (match) {
+      return `https://serializd.com/list/${match[1]}?isHexId=true`;
+    }
+    return url;
+  }
 
   function renderRuntime(rt) {
     if (!rt || (rt.days === 0 && rt.hours === 0 && rt.minutes === 0)) return "";
@@ -624,7 +631,7 @@
 
   // ── Fetch list ────────────────────────────────────────────────
   async function fetchList() {
-    const url = document.getElementById("urlInput").value.trim();
+    let url = document.getElementById("urlInput").value.trim();
     const errorBox       = document.getElementById("errorBox");
     const loadingSection = document.getElementById("loadingSection");
     const resultsHeader  = document.getElementById("resultsHeader");
@@ -639,7 +646,15 @@
     currentShows = [];
 
     if (!url) { showError("Please enter a Serializd list URL."); return; }
-    if (!url.includes("serializd.com")) { showError("URL must be from serializd.com"); return; }
+
+    // Convert short app links to full serializd.com URLs before anything else
+    url = normalizeSerializdUrl(url);
+    document.getElementById("urlInput").value = url;
+
+    if (!url.includes("serializd.com")) {
+      showError("URL must be from serializd.com or srlzd.com");
+      return;
+    }
 
     fetchBtn.disabled = true;
     loadingSection.classList.add("visible");
