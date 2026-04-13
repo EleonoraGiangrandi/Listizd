@@ -1,0 +1,26 @@
+{
+  "name": "serializd",
+  "version": "1.0.0",
+  "description": "---\r title: Listizd\r emoji: 📺\r colorFrom: green\r colorTo: blue\r sdk: docker\r app_port: 7860\r pinned: false\r ---",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.6.0"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EleonoraGiangrandi/Listizd.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/EleonoraGiangrandi/Listizd/issues"
+  },
+  "homepage": "https://github.com/EleonoraGiangrandi/Listizd#readme"
+}
