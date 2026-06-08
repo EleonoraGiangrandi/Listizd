@@ -10,9 +10,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 RUN playwright install chromium --with-deps
 
-RUN chmod -R 777 /app
-
 COPY . .
+
+RUN chmod -R 777 /app
 
 EXPOSE 7860
 

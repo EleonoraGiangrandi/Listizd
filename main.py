@@ -147,17 +147,25 @@ async def scrape(req: ScrapeRequest):
         )
         stdout, stderr = await asyncio.wait_for(process.communicate(), timeout=600.0)
 
+        stdout_text = stdout.decode().strip()
         stderr_text = stderr.decode().strip()
+        
         if stderr_text:
             print("SCRAPER STDERR:", stderr_text, flush=True)
 
+        if stdout_text:
+            try:
+                data = json.loads(stdout_text)
+                if isinstance(data, dict) and "error" in data:
+                    raise HTTPException(status_code=400, detail=data["error"])
+            except json.JSONDecodeError:
+                pass
+
         if process.returncode != 0:
             print("SCRAPER FAILED with code:", process.returncode, flush=True)
-            raise HTTPException(status_code=500, detail=f"Scraper error: {stderr_text}")
+            raise HTTPException(status_code=500, detail=f"Scraper error: {stderr_text or 'Unknown subprocess error'}")
 
-        data = json.loads(stdout.decode().strip())
-        if isinstance(data, dict) and "error" in data:
-            raise HTTPException(status_code=400, detail=data["error"])
+        data = json.loads(stdout_text)
 
         total_min = sum(s.get("runtime_minutes", 0) for s in data)
         return JSONResponse({
@@ -185,8 +193,8 @@ async def recommend(payload: dict):
 
     existing_ids = {str(s.get("tmdb_id")) for s in shows if s.get("tmdb_id")}
 
-    score_map   = defaultdict(int)   # tmdb_id → how many list-shows recommend it
-    details_map = {}                 # tmdb_id → show metadata
+    score_map   = defaultdict(int)   
+    details_map = {}                 
 
     def fetch_recs(show):
         tid = show.get("tmdb_id")
@@ -221,7 +229,6 @@ async def recommend(payload: dict):
     with ThreadPoolExecutor(max_workers=8) as executor:
         list(executor.map(fetch_recs, shows))
 
-    # Sort by score (how many shows in the list recommend this), take top 20
     top = sorted(
         details_map.values(),
         key=lambda x: score_map[x["tmdb_id"]],
