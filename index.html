@@ -208,6 +208,7 @@
       display: flex; align-items: center; gap: 6px;
     }
     .export-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .export-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
     .shows-grid {
       display: grid;
@@ -279,6 +280,56 @@
       opacity: 0.5;
     }
 
+    /* ── Recommendations section ── */
+    .recs-section {
+      display: none;
+      margin-bottom: 80px;
+    }
+    .recs-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .recs-title {
+      font-size: 1.4rem;
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+    }
+    .recs-insight {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      line-height: 1.6;
+      display: none;
+    }
+    .recs-loading {
+      text-align: center;
+      padding: 40px 0;
+      display: none;
+    }
+    /* score badge on rec cards */
+    .score-badge {
+      position: absolute;
+      top: 8px; right: 8px;
+      background: var(--accent);
+      color: #1a1200;
+      font-size: 0.65rem;
+      font-weight: 700;
+      border-radius: 99px;
+      padding: 2px 7px;
+      opacity: 0.92;
+    }
+    .show-card { position: relative; }
+
+    /* ── Toast ── */
     .toast {
       position: fixed;
       bottom: 24px; right: 24px;
@@ -298,6 +349,7 @@
     .toast.show { transform: translateY(0); opacity: 1; }
     .toast-icon { color: var(--accent); }
 
+    /* ── Modal ── */
     .modal-backdrop {
       position: fixed; inset: 0;
       background: rgba(0, 0, 0, 0.75);
@@ -508,6 +560,7 @@
     <p class="loading-text">Fetching your list — this may take a few seconds…</p>
   </div>
 
+  <!-- List results -->
   <div class="results-header" id="resultsHeader">
     <div>
       <span class="results-title">Your list</span>
@@ -526,6 +579,27 @@
   <p id="totalRuntime" style="color: var(--accent); font-size: 0.9rem; margin-bottom: 20px;"></p>
 
   <div class="shows-grid" id="showsGrid"></div>
+
+  <!-- ── Recommendations section ── -->
+  <div class="recs-section" id="recsSection">
+
+    <div class="recs-header">
+      <span class="recs-title">You might also like</span>
+      <button class="export-btn" id="getRecsBtn" onclick="fetchRecommendations()">
+        ✦ Get recommendations
+      </button>
+    </div>
+
+    <div class="recs-insight" id="recsInsight"></div>
+
+    <div class="recs-loading" id="recsLoading">
+      <div class="spinner"></div>
+      <p class="loading-text">Analyzing your taste…</p>
+    </div>
+
+    <div class="shows-grid" id="recsGrid"></div>
+
+  </div>
 
 </div>
 
@@ -553,22 +627,17 @@
 </div>
 
 <footer style="text-align:center; color:var(--text-muted); font-size:0.8rem; padding: 40px 0; display: flex; flex-direction: column; align-items: center; gap: 16px;">
-  
   <div>
     Built for <a href="https://www.serializd.com/" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none; font-weight: 500; transition: opacity 0.2s;">Serializd</a> users 
     • Not affiliated with Serializd
   </div>
-
   <a target="_blank" rel="noopener" href="https://www.themoviedb.org/" style="display:inline-flex; align-items:center; gap: 8px; text-decoration: none; color: var(--text-muted); transition: color 0.2s;">
     <span>TV data from</span>
     <img alt="Logo for TMDB" 
          src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" 
-         width="100" 
-         height="12" 
-         style="display: block;" 
-         loading="lazy">
+         width="100" height="12"
+         style="display: block;" loading="lazy">
   </a>
-
 </footer>
 
 <script>
@@ -576,12 +645,9 @@
   let currentShows = [];
 
   // ── Normalize short app links ─────────────────────────────────
-  // Converts https://srlzd.com/l/{id} → https://www.serializd.com/list/{id}?isHexId=true
   function normalizeSerializdUrl(url) {
     const match = url.match(/^https?:\/\/srlzd\.com\/l\/([a-zA-Z0-9]+)/);
-    if (match) {
-      return `https://www.serializd.com/list/${match[1]}?isHexId=true`;
-    }
+    if (match) return `https://www.serializd.com/list/${match[1]}?isHexId=true`;
     return url;
   }
 
@@ -640,17 +706,19 @@
     const resultsHeader  = document.getElementById("resultsHeader");
     const showsGrid      = document.getElementById("showsGrid");
     const fetchBtn       = document.getElementById("fetchBtn");
+    const recsSection    = document.getElementById("recsSection");
 
     errorBox.classList.remove("visible");
     errorBox.textContent = "";
     resultsHeader.classList.remove("visible");
     showsGrid.innerHTML = "";
     document.getElementById("totalRuntime").textContent = "";
+    recsSection.style.display = "none";
+    document.getElementById("recsGrid").innerHTML = "";
+    document.getElementById("recsInsight").style.display = "none";
     currentShows = [];
 
     if (!url) { showError("Please enter a Serializd list URL."); return; }
-
-    // Convert short app links to full serializd.com URLs
     url = normalizeSerializdUrl(url);
     document.getElementById("urlInput").value = url;
 
@@ -715,6 +783,69 @@
         </div>
       </div>
     `).join("");
+
+    // Show the recommendations section (button only, no results yet)
+    document.getElementById("recsSection").style.display = "block";
+  }
+
+  // ── Recommendations ───────────────────────────────────────────
+  async function fetchRecommendations() {
+    if (!currentShows.length) return;
+
+    const btn     = document.getElementById("getRecsBtn");
+    const loading = document.getElementById("recsLoading");
+    const grid    = document.getElementById("recsGrid");
+    const insight = document.getElementById("recsInsight");
+
+    btn.disabled = true;
+    btn.textContent = "Loading…";
+    loading.style.display = "block";
+    grid.innerHTML = "";
+    insight.style.display = "none";
+
+    try {
+      const resp = await fetch(`${API_BASE}/recommend`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ shows: currentShows }),
+      });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.detail || "Could not load recommendations.");
+
+      if (data.insight) {
+        insight.textContent = data.insight;
+        insight.style.display = "block";
+      }
+
+      if (!data.recommendations || data.recommendations.length === 0) {
+        grid.innerHTML = `<p style="color:var(--text-muted); font-size:0.875rem;">No recommendations found for this list.</p>`;
+        return;
+      }
+
+      grid.innerHTML = data.recommendations.map((show, i) => `
+        <div class="show-card" style="animation-delay:${Math.min(i * 0.025, 0.4)}s"
+             title="${escHtml(show.overview || show.title)}">
+          ${show.score > 1 ? `<span class="score-badge">×${show.score}</span>` : ""}
+          ${show.poster
+            ? `<img class="card-poster" src="${escHtml(show.poster)}" alt="${escHtml(show.title)}" loading="lazy" onerror="this.replaceWith(makeFallback())" />`
+            : `<div class="card-no-poster">🎬</div>`}
+          <div class="card-info">
+            <div class="card-title-text">${escHtml(show.title)}</div>
+            <div class="card-runtime">
+              ${show.year || ""}${show.tmdb_rating ? " · ★ " + show.tmdb_rating : ""}
+            </div>
+          </div>
+        </div>
+      `).join("");
+
+    } catch (e) {
+      showToast("Error loading recommendations.");
+      console.error(e);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "✦ Get recommendations";
+      loading.style.display = "none";
+    }
   }
 
   // ── Modal ─────────────────────────────────────────────────────
@@ -722,7 +853,6 @@
     const show = currentShows[index];
     if (!show) return;
 
-    // Poster
     const posterWrap = document.getElementById("modalPosterWrap");
     if (show.poster) {
       posterWrap.innerHTML = `<img class="modal-poster" src="${escHtml(show.poster)}" alt="${escHtml(show.title)}" />`;
@@ -730,11 +860,9 @@
       posterWrap.innerHTML = `<div class="modal-no-poster">🎬</div>`;
     }
 
-    // Title & year
     document.getElementById("modalTitle").textContent = show.title;
     document.getElementById("modalYear").textContent  = show.year || "";
 
-    // Rating
     const ratingEl = document.getElementById("modalRating");
     if (show.tmdb_rating) {
       ratingEl.style.display = "inline-flex";
@@ -743,15 +871,14 @@
       ratingEl.style.display = "none";
     }
 
-    // Meta rows
     const rows = [
-      { label: "Watch time",    value: runtimeToString(show.runtime_minutes) },
-      { label: "Seasons",       value: show.seasons   || "—" },
-      { label: "Episodes",      value: show.episodes  || "—" },
-      { label: "Genres",        value: show.genres    || "—" },
-      { label: "Country",       value: show.country   || "—" },
-      { label: "Language",      value: show.original_language || "—" },
-      { label: "Network",       value: show.network   || "—" },
+      { label: "Watch time",  value: runtimeToString(show.runtime_minutes) },
+      { label: "Seasons",     value: show.seasons   || "—" },
+      { label: "Episodes",    value: show.episodes  || "—" },
+      { label: "Genres",      value: show.genres    || "—" },
+      { label: "Country",     value: show.country   || "—" },
+      { label: "Language",    value: show.original_language || "—" },
+      { label: "Network",     value: show.network   || "—" },
     ];
 
     document.getElementById("modalMeta").innerHTML = rows.map(r => `
@@ -761,7 +888,6 @@
       </div>
     `).join("");
 
-    // Footer link
     const footerEl = document.getElementById("modalFooter");
     if (show.serializd_url) {
       footerEl.innerHTML = `
@@ -828,17 +954,17 @@
     const rows = currentShows.map((s, i) => [
       i + 1,
       csvCell(s.title),
-      csvCell(s.year                 ?? ""),
-      csvCell(s.tmdb_rating          ?? ""),
-      csvCell(s.seasons              ?? ""),
-      csvCell(s.episodes             ?? ""),
+      csvCell(s.year              ?? ""),
+      csvCell(s.tmdb_rating       ?? ""),
+      csvCell(s.seasons           ?? ""),
+      csvCell(s.episodes          ?? ""),
       csvCell(runtimeToString(s.runtime_minutes)),
-      csvCell(s.genres               ?? ""),
-      csvCell(s.country              ?? ""),
-      csvCell(s.original_language    ?? ""),
-      csvCell(s.network              ?? ""),
-      csvCell(s.serializd_url        ?? ""),
-      csvCell(s.poster               ?? ""),
+      csvCell(s.genres            ?? ""),
+      csvCell(s.country           ?? ""),
+      csvCell(s.original_language ?? ""),
+      csvCell(s.network           ?? ""),
+      csvCell(s.serializd_url     ?? ""),
+      csvCell(s.poster            ?? ""),
     ].join(","));
 
     const csv = [headers.join(","), ...rows].join("\n");
