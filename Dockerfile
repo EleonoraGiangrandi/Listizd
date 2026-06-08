@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/playwright/python:v1.47.0-jammy
 
-# Configura una cartella fissa e accessibile per i browser di Playwright
+ENV HOME=/app
 ENV PLAYWRIGHT_BROWSERS_PATH=/app/ms-playwright
 
 WORKDIR /app
