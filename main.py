@@ -12,7 +12,9 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import uvicorn
+from dotenv import load_dotenv
 
+load_dotenv()
 TMDB_KEY = os.environ.get("TMDB_API_KEY", "")
 
 app = FastAPI()

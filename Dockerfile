@@ -1,12 +1,16 @@
 FROM mcr.microsoft.com/playwright/python:v1.47.0-jammy
 
+# Configura una cartella fissa e accessibile per i browser di Playwright
+ENV PLAYWRIGHT_BROWSERS_PATH=/app/ms-playwright
+
 WORKDIR /app
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Chromium è già nel base image, ma reinstallarlo qui lo fissa nel layer
 RUN playwright install chromium --with-deps
+
+RUN chmod -R 777 /app
 
 COPY . .
 
